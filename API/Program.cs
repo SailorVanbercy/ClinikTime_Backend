@@ -1,4 +1,5 @@
 using Infrastructure.Data;
+using Infrastructure.user.EF;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,11 @@ builder.Services.AddDbContext<ClinikTimeDbContext>(options =>
         builder.Configuration.GetConnectionString("ClinikTime")
     )
 );
+
+// ======================
+// Repository
+// ======================
+builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
 
 var app = builder.Build();
 
