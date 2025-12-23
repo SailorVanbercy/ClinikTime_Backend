@@ -1,3 +1,5 @@
+using ClinikTime.service;
+using ClinikTime.utils.PasswordHasher;
 using Infrastructure.Data;
 using Infrastructure.user.EF;
 using Microsoft.EntityFrameworkCore;
@@ -7,9 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 // ======================
 // Services
 // ======================
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
 
+// Controllers
+builder.Services.AddControllers();
+
+// Swagger (Swashbuckle UNIQUEMENT – OK en .NET 9)
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// DbContext
 builder.Services.AddDbContext<ClinikTimeDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("ClinikTime")
@@ -17,18 +25,25 @@ builder.Services.AddDbContext<ClinikTimeDbContext>(options =>
 );
 
 // ======================
-// Repository
+// Dependency Injection
 // ======================
 builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 var app = builder.Build();
 
 // ======================
-// Pipeline HTTP
+// HTTP Pipeline
 // ======================
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.DocumentTitle = "ClinikTime API";
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "ClinikTime API v1");
+    });
 }
 
 app.UseHttpsRedirection();
