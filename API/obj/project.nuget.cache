@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "q+DdlzpWD48=",
+  "dgSpecHash": "R1vrFNe/jeU=",
   "success": true,
   "projectFilePath": "C:\\Users\\sailo\\OneDrive - Haute Ecole Louvain en Hainaut\\HELHA\\Bac 3\\Projet\\ClinikTime\\Backend\\ClinikTime\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\sailo\\.nuget\\packages\\azure.core\\1.49.0\\azure.core.1.49.0.nupkg.sha512",
     "C:\\Users\\sailo\\.nuget\\packages\\azure.identity\\1.16.0\\azure.identity.1.16.0.nupkg.sha512",
     "C:\\Users\\sailo\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\sailo\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.11\\microsoft.aspnetcore.authentication.jwtbearer.9.0.11.nupkg.sha512",
     "C:\\Users\\sailo\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\8.0.0\\microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
     "C:\\Users\\sailo\\.nuget\\packages\\microsoft.bcl.cryptography\\9.0.9\\microsoft.bcl.cryptography.9.0.9.nupkg.sha512",
     "C:\\Users\\sailo\\.nuget\\packages\\microsoft.data.sqlclient\\7.0.0-preview3.25342.7\\microsoft.data.sqlclient.7.0.0-preview3.25342.7.nupkg.sha512",
