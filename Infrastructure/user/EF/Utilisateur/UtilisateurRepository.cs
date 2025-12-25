@@ -1,7 +1,6 @@
-﻿using Domain.models;
-using Infrastructure.Data;
+﻿using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-
+using Domain.models;
 namespace Infrastructure.user.EF;
 
 public class UtilisateurRepository(ClinikTimeDbContext context) : IUtilisateurRepository
@@ -18,6 +17,13 @@ public class UtilisateurRepository(ClinikTimeDbContext context) : IUtilisateurRe
     public Task<Utilisateur?> GetByIdAsync(int id)
         => context.Utilisateurs.FirstOrDefaultAsync(u => u.Id == id);
 
+    public Task<Utilisateur?> GetByIdWithProfile(int id)
+        =>  context.Utilisateurs
+            .Include(u => u.Medecin)
+                .ThenInclude(m => m.Specialite)
+            .FirstAsync(u => u.Id == id);
+    
+
     public async Task AddAsync(Utilisateur utilisateur)
     {
          await context.Utilisateurs.AddAsync(utilisateur);
@@ -28,5 +34,10 @@ public class UtilisateurRepository(ClinikTimeDbContext context) : IUtilisateurRe
     {
         context.Utilisateurs.Update(utilisateur);
         await context.SaveChangesAsync();
+    }
+
+    public void SaveChanges()
+    {
+        context.SaveChanges();
     }
 }

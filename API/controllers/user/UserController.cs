@@ -1,15 +1,24 @@
-﻿using ClinikTime.service;
+﻿using System.Security.Claims;
+using ClinikTime.service;
 using Domain.models;
 using Infrastructure.user.Dto;
+using Infrastructure.user.Dto.Profile;
 using Infrastructure.user.EF;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinikTime.controllers.user;
-
+// [Authorize] ⚠️ a remettre à la fin ici pour les test swagger
 [ApiController]
 [Route("api/v1/user")]
 public class UserController(UserService service) : ControllerBase
 {
+    
+    /// <summary>
+    /// Retourne la liste de tous les utilisateurs (accessible seulement par un admin)
+    /// </summary>
+    /// <returns></returns>
+    // [Authorize(Roles = "Admin")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<UserDto>>> GetAll()
@@ -42,6 +51,25 @@ public class UserController(UserService service) : ControllerBase
 
         return Ok(user);
     }
+
+    /// <summary>
+    /// Retourne le profil de l'utilisateur connecté (User ou Medeciin)
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [Authorize(Roles = "User,Medecin")]
+    [HttpGet("me")]
+    public async Task<ActionResult<UserProfileDto>> GetMyProfile()
+    {
+        // ID issu du jwt
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+            return Unauthorized();
+
+        int userId = int.Parse(userIdClaim.Value);
+        var profile = await service.GetMyProfileAsync(userId);
+        return Ok(profile);
+    }
     
 
     [HttpPost]
@@ -67,5 +95,12 @@ public class UserController(UserService service) : ControllerBase
             return NotFound();
         return NoContent();
     }
-    
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("{userId:int}/promote-medecin")]
+    public async Task<NoContentResult> PromoteMedecin(int userId)
+    {
+        await service.PromoteUserToMedecin(userId);
+        return NoContent();
+    }
 }

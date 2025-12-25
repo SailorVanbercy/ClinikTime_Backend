@@ -1,10 +1,12 @@
 using ClinikTime.service;
 using ClinikTime.service.Auth;
 using ClinikTime.service.jwt;
+using ClinikTime.service.Medecin;
 using ClinikTime.utils;
 using ClinikTime.utils.PasswordHasher;
 using Infrastructure.Data;
 using Infrastructure.user.EF;
+using Infrastructure.user.EF.Medecin;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,7 +66,9 @@ builder.Services.AddAuthorization();
 // Dependency Injection
 // ======================
 builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
+builder.Services.AddScoped<IMedecinRepository, MedecinRepository>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<MedecinService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();

@@ -11,5 +11,6 @@ public class RendezVous
     public string Statut { get; set; } = null!;
 
     public int MedecinId { get; set; }
+    public Medecin Medecin { get; set; } = null!;
     public int FichePatientId { get; set; }
 }

@@ -9,4 +9,7 @@ public class Utilisateur
     public string Role { get; set; } = null!;
 
     public DateTime DateCreation { get; set; }
+    
+    //Relation Optionelle avec Medecin
+    public Medecin? Medecin { get; set; }
 }

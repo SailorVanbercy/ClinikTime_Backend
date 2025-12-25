@@ -127,13 +127,13 @@ public class ClinikTimeDbContext : DbContext
             builder.Property(m => m.Telephone)
                    .HasMaxLength(30);
 
-            builder.HasOne<Utilisateur>()
-                   .WithOne()
+            builder.HasOne(m => m.Utilisateur)
+                   .WithOne(u => u.Medecin)
                    .HasForeignKey<Medecin>(m => m.UtilisateurId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne<Specialite>()
-                   .WithMany()
+            builder.HasOne(m => m.Specialite)
+                   .WithMany(s => s.Medecins)
                    .HasForeignKey(m => m.SpecialiteId)
                    .OnDelete(DeleteBehavior.Restrict);
         });
@@ -156,8 +156,8 @@ public class ClinikTimeDbContext : DbContext
             builder.Property(d => d.EstBloquee)
                    .IsRequired();
 
-            builder.HasOne<Medecin>()
-                   .WithMany()
+            builder.HasOne(d => d.Medecin)
+                   .WithMany(m => m.Disponibilites)
                    .HasForeignKey(d => d.MedecinId)
                    .OnDelete(DeleteBehavior.Cascade);
         });
@@ -184,8 +184,8 @@ public class ClinikTimeDbContext : DbContext
                    .IsRequired()
                    .HasMaxLength(20);
 
-            builder.HasOne<Medecin>()
-                   .WithMany()
+            builder.HasOne(r => r.Medecin)
+                   .WithMany(m => m.RendezVous)
                    .HasForeignKey(r => r.MedecinId)
                    .OnDelete(DeleteBehavior.Restrict);
 

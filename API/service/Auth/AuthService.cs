@@ -3,8 +3,6 @@ using ClinikTime.utils.PasswordHasher;
 using Domain.models;
 using Infrastructure.user.Dto;
 using Infrastructure.user.EF;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ClinikTime.service.Auth;
 

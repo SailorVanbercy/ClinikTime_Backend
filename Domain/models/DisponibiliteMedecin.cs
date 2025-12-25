@@ -6,6 +6,8 @@ public class DisponibiliteMedecin
 
     public int MedecinId { get; set; }
 
+    public Medecin Medecin { get; set; } = null!;
+
     public DateTime Debut { get; set; }
     public DateTime Fin { get; set; }
 
