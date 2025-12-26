@@ -14,7 +14,7 @@ public class Medecin
     
     //FK vers Specialité
     public int SpecialiteId { get; set; }
-    public Specialite Specialite { get; set; }
+    public Specialite Specialite { get; set; } = null!;
     
     //Disponibilitées
     public ICollection<DisponibiliteMedecin> Disponibilites { get; set; } = new List<DisponibiliteMedecin>();

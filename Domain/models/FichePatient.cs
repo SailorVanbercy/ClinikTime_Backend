@@ -8,8 +8,11 @@ public class FichePatient
     public string Prenom { get; set; } = null!;
     public DateTime DateNaissance { get; set; }
 
-    public string Sexe { get; set; } = null!;
+    public string? Sexe { get; set; }
     public string LienParente { get; set; } = null!;
 
     public int UtilisateurId { get; set; }
+    public Utilisateur Utilisateur { get; set; } = null!;
+
+    public List<RendezVous> RendezVous { get; set; } = new List<RendezVous>();
 }

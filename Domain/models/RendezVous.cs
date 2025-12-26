@@ -8,9 +8,10 @@ public class RendezVous
     public DateTime Fin { get; set; }
 
     public string? Motif { get; set; }
-    public string Statut { get; set; } = null!;
+    public string Statut { get; set; } = "Confirme";
 
     public int MedecinId { get; set; }
     public Medecin Medecin { get; set; } = null!;
     public int FichePatientId { get; set; }
+    public FichePatient FichePatient { get; set; } = null!;
 }

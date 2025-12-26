@@ -1,12 +1,18 @@
 using ClinikTime.service;
 using ClinikTime.service.Auth;
+using ClinikTime.service.Disponibilite;
+using ClinikTime.service.FichePatient;
 using ClinikTime.service.jwt;
 using ClinikTime.service.Medecin;
+using ClinikTime.service.RendezVous;
 using ClinikTime.utils;
 using ClinikTime.utils.PasswordHasher;
 using Infrastructure.Data;
 using Infrastructure.user.EF;
+using Infrastructure.user.EF.Disponibilite;
+using Infrastructure.user.EF.FichePatient;
 using Infrastructure.user.EF.Medecin;
+using Infrastructure.user.EF.RendezVous;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -67,8 +73,14 @@ builder.Services.AddAuthorization();
 // ======================
 builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
 builder.Services.AddScoped<IMedecinRepository, MedecinRepository>();
+builder.Services.AddScoped<IRendezVousRepository, RendezVousRepository>();
+builder.Services.AddScoped<IFichePatientRepository, FichePatientrepository>();
+builder.Services.AddScoped<IDisponibiliteMedecinRepository, DisponibiliteMedecinRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<MedecinService>();
+builder.Services.AddScoped<RendezVousService>();
+builder.Services.AddScoped<FichePatientService>();
+builder.Services.AddScoped<DisponibiliteMedecinService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();

@@ -12,4 +12,7 @@ public class Utilisateur
     
     //Relation Optionelle avec Medecin
     public Medecin? Medecin { get; set; }
+    
+    //Fiches Patient
+    public List<FichePatient> FichesPatients { get; set; } = new List<FichePatient>();
 }

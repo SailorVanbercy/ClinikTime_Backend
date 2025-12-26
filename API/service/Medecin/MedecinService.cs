@@ -21,12 +21,46 @@ public class MedecinService(IMedecinRepository repository, IUtilisateurRepositor
         var medecin = new Domain.models.Medecin
         {
             UtilisateurId = dto.UtilisateurId,
+            Utilisateur = user,
             Nom = dto.Nom,
             Prenom = dto.Prenom,
             Telephone = dto.Telephone,
             SpecialiteId = dto.SpecialiteId
         };
+        user.Medecin = medecin;
+        
        await repository.CreateMedecin(medecin);
-       return new MedecinDto(medecin);
+       await utilisateurRepository.UpdateAsync(user);
+       return new MedecinDto
+       {
+           Id = medecin.Id,
+           SpecialiteId = medecin.SpecialiteId,
+           Nom = medecin.Nom,
+           Prenom = medecin.Prenom,
+           Telephone = medecin.Telephone,
+           UtilisateurId = user.Id
+       };
+    }
+
+    public async Task<MedecinDto?> GetMyMedecin(int id)
+    {
+        var medecin = await repository.GetByUtilisateurIdAsync(id);
+        if (medecin == null)
+            return null;
+        return new MedecinDto(medecin);
+    }
+
+    public async Task<List<MedecinDto>> GetAllAsync(int? specialiteId)
+    {
+        var medecins =  await repository.GetAllAsync(specialiteId);
+        return medecins.Select(m => new MedecinDto(m)).ToList();
+    }
+
+    public async Task<MedecinDto?> GetByUtilisateurIdAsync(int id)
+    {
+        var medecin =  await repository.GetByUtilisateurIdAsync(id);
+        if (medecin == null)
+            return null;
+        return new  MedecinDto(medecin);
     }
 }

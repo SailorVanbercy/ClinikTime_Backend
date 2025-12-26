@@ -81,8 +81,8 @@ public class ClinikTimeDbContext : DbContext
                    .IsRequired()
                    .HasMaxLength(20);
 
-            builder.HasOne<Utilisateur>()
-                   .WithMany()
+            builder.HasOne(fp => fp.Utilisateur)
+                   .WithMany(u => u.FichesPatients)
                    .HasForeignKey(fp => fp.UtilisateurId)
                    .OnDelete(DeleteBehavior.Cascade);
         });
@@ -189,10 +189,11 @@ public class ClinikTimeDbContext : DbContext
                    .HasForeignKey(r => r.MedecinId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne<FichePatient>()
-                   .WithMany()
+            builder.HasOne(r => r.FichePatient) 
+                   .WithMany(fp => fp.RendezVous)
                    .HasForeignKey(r => r.FichePatientId)
                    .OnDelete(DeleteBehavior.Cascade);
+
         });
 
         // ======================

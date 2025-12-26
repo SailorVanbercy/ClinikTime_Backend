@@ -15,7 +15,7 @@ public class UtilisateurRepository(ClinikTimeDbContext context) : IUtilisateurRe
 
 
     public Task<Utilisateur?> GetByIdAsync(int id)
-        => context.Utilisateurs.FirstOrDefaultAsync(u => u.Id == id);
+        => context.Utilisateurs.Include(u => u.Medecin).FirstOrDefaultAsync(u => u.Id == id);
 
     public Task<Utilisateur?> GetByIdWithProfile(int id)
         =>  context.Utilisateurs

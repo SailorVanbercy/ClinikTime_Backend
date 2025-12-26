@@ -8,6 +8,7 @@ public class UserDto
     public string Email { get; set; } = null!;
     public string Role { get; set; } = null!;
     public DateTime DateCreation { get; set; }
+    public Medecin? Medecin { get; set; }
 
     public UserDto(Utilisateur utilisateur)
     {
@@ -15,5 +16,6 @@ public class UserDto
         this.Email = utilisateur.Email;
         this.Role = utilisateur.Role;
         this.DateCreation = utilisateur.DateCreation;
+        this.Medecin = utilisateur.Medecin;
     }
 }

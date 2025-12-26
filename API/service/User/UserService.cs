@@ -20,6 +20,7 @@ public class UserService(IUtilisateurRepository repository, IPasswordHasher hash
         var user = await repository.GetByIdAsync(id);
         if (user == null)
             return null;
+        Console.WriteLine(user.Medecin != null ? "Medecin Initialisé" : "Medecin pas initialisé");
         return new UserDto(user);
     }
 
