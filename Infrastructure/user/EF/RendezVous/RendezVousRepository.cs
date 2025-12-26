@@ -75,4 +75,11 @@ public class RendezVousRepository(ClinikTimeDbContext context) : IRendezVousRepo
             .OrderBy(r => r.Debut)
             .ToListAsync();
     }
+
+    public Task DeleteAsync(Domain.models.RendezVous rendezVous)
+    {
+         context.RendezVous.Remove(rendezVous);
+         context.SaveChanges();
+         return Task.CompletedTask;
+    }
 }

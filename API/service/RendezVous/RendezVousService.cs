@@ -86,7 +86,8 @@ public class RendezVousService(IRendezVousRepository repository, IMedecinReposit
         //Annulation
         rdv.Statut = "Annule";
         await repository.UpdateAsync(rdv);
-        
+        await repository.DeleteAsync(rdv);
+
     }
 
     public async Task ModifierAsync(int rdvId, int userId, UpdateRendezVousDto dto)
@@ -167,6 +168,8 @@ public class RendezVousService(IRendezVousRepository repository, IMedecinReposit
             $"Rendez-vous annulé par le médecin {medecin.Nom}",
             $"Bonjour,<br/><br/>Votre rendez-vous du <b>{rdv.Debut}</b> a été annulé par le docteur {medecin.Nom}."
         );
+
+        await repository.DeleteAsync(rdv);
     }
     public async Task ReprogrammerAsync(
         int rendezVousId,

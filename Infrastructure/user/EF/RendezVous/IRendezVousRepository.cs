@@ -10,4 +10,5 @@ public interface IRendezVousRepository
     Task<bool> ExistsOverlappingExceptAsync(int rdvId, int medecinId, DateTime debut, DateTime fin);
     Task<List<Domain.models.RendezVous>> GetByUtilisateurIdAsync(int utilisateurId);
     Task<List<Domain.models.RendezVous>> GetPourJourAsync(int medecinId, DateTime date);
+    Task DeleteAsync(Domain.models.RendezVous rendezVous);
 }
