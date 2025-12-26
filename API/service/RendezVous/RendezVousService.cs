@@ -1,7 +1,8 @@
-﻿using Domain.models;
+﻿using ClinikTime.service.Email;
 using Infrastructure.user.Dto;
 using Infrastructure.user.Dto.Create;
 using Infrastructure.user.Dto.RendezVous;
+using Infrastructure.user.EF;
 using Infrastructure.user.EF.Disponibilite;
 using Infrastructure.user.EF.FichePatient;
 using Infrastructure.user.EF.Medecin;
@@ -9,7 +10,8 @@ using Infrastructure.user.EF.RendezVous;
 
 namespace ClinikTime.service.RendezVous;
 
-public class RendezVousService(IRendezVousRepository repository, IMedecinRepository medecinRepository, IFichePatientRepository patientRepository, IDisponibiliteMedecinRepository disponibiliterepository)
+public class RendezVousService(IRendezVousRepository repository, IMedecinRepository medecinRepository, 
+    IFichePatientRepository patientRepository, IDisponibiliteMedecinRepository disponibiliterepository, IUtilisateurRepository userRepository, IEmailService emailService)
 {
     public async Task<Domain.models.RendezVous> CreateAsync(CreateRendezVousDto dto)
     {
@@ -68,7 +70,6 @@ public class RendezVousService(IRendezVousRepository repository, IMedecinReposit
         var rdv = await repository.GetByidAsync(rendezVousId);
         if (rdv == null)
             throw new Exception("Rendez-vous introuvable");
-        
         //Récupérer la fiche patient
         var fiche = await patientRepository.GetByIdAsync(rdv.FichePatientId);
         if(fiche == null)
@@ -85,6 +86,7 @@ public class RendezVousService(IRendezVousRepository repository, IMedecinReposit
         //Annulation
         rdv.Statut = "Annule";
         await repository.UpdateAsync(rdv);
+        
     }
 
     public async Task ModifierAsync(int rdvId, int userId, UpdateRendezVousDto dto)
@@ -150,12 +152,21 @@ public class RendezVousService(IRendezVousRepository repository, IMedecinReposit
             throw new Exception("Rdv introuvable");
         if (rdv.MedecinId != medecinId)
             throw new UnauthorizedAccessException();
-        if (rdv.Statut == "Refuse" || rdv.Statut == "Annule")
+        if (rdv.Statut is "Refuse" or "Annule")
             throw new Exception("Ce rendez-vous ne peut plus êtr modifié");
+        var medecin = await medecinRepository.GetByIdAsync(rdv.MedecinId);
+        if(medecin == null)
+            throw new Exception("Medecin introuvable");
 
         rdv.Statut = "Refuse";
         await repository.UpdateAsync(rdv);
 
+        // --- ENVOI DE L'EMAIL AU PATIENT ---
+        await EnvoyerNotificationAsync(
+            rdv.FichePatientId,
+            $"Rendez-vous annulé par le médecin {medecin.Nom}",
+            $"Bonjour,<br/><br/>Votre rendez-vous du <b>{rdv.Debut}</b> a été annulé par le docteur {medecin.Nom}."
+        );
     }
     public async Task ReprogrammerAsync(
         int rendezVousId,
@@ -215,12 +226,19 @@ public class RendezVousService(IRendezVousRepository repository, IMedecinReposit
 
         if (conflit)
             throw new Exception("Conflit avec un autre rendez-vous");
-
+        
+        //sauvegarde de l'ancienne date
+        var ancienneDate = rdv.Debut;
         rdv.Debut = dto.NouveauDebut;
         rdv.Fin = nouvelleFin;
         rdv.Statut = "Confirme";
 
         await repository.UpdateAsync(rdv);
+
+
+        await EnvoyerNotificationAsync(rdv.FichePatientId,
+            "Votre rendez-vous a été déplacé",
+            $"Bonjour, <br/><br/>Votre rendez-vous initialement prévu le <b>{ancienneDate}</b> a été déplacé au <b>{rdv.Debut}</b>");
     }
 
     public async Task<List<RendezVousPatientDto>> GetForPatientAsync(int utilisateurId)
@@ -293,5 +311,27 @@ public class RendezVousService(IRendezVousRepository repository, IMedecinReposit
         }
 
         return creneauxLibres;
+    }
+    // --- Méthode Helper Privée pour l'envoi d'emails ---
+    private async Task EnvoyerNotificationAsync(int fichePatientId, string subject, string body)
+    {
+        try
+        {
+            // 1. Récupérer la fiche patient pour avoir l'ID Utilisateur
+            var fiche = await patientRepository.GetByIdAsync(fichePatientId);
+            if (fiche == null) return; 
+
+            // 2. Récupérer l'utilisateur pour avoir son email
+            var user = await userRepository.GetByIdAsync(fiche.UtilisateurId);
+            if (user == null || string.IsNullOrEmpty(user.Email)) return;
+
+            // 3. Envoyer l'email
+            await emailService.SendEmailAsync(user.Email, subject, body);
+        }
+        catch (Exception ex)
+        {
+            // On attrape l'exception pour ne pas bloquer l'action principale si le mail échoue
+            Console.WriteLine($"Erreur lors de l'envoi de l'email : {ex.Message}");
+        }
     }
 }

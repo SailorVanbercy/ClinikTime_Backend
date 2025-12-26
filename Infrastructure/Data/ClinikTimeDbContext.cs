@@ -19,6 +19,7 @@ public class ClinikTimeDbContext : DbContext
     public DbSet<RendezVous> RendezVous => Set<RendezVous>();
     public DbSet<DisponibiliteMedecin> DisponibilitesMedecin => Set<DisponibiliteMedecin>();
     public DbSet<NoteMedicale> NotesMedicales => Set<NoteMedicale>();
+    public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
 
     // ======================
     // Fluent API
@@ -220,6 +221,30 @@ public class ClinikTimeDbContext : DbContext
                    .WithMany()
                    .HasForeignKey(n => n.FichePatientId)
                    .OnDelete(DeleteBehavior.Cascade);
+        });
+        // ======================
+        // Reset Token
+        // ======================
+        modelBuilder.Entity<PasswordResetToken>(builder =>
+        {
+               builder.ToTable("PasswordResetToken");
+
+               builder.HasKey(t => t.Id);
+
+               builder.Property(t => t.Token)
+                      .IsRequired()
+                      .HasMaxLength(255);
+
+               builder.Property(t => t.Expiration)
+                      .IsRequired();
+
+               builder.Property(t => t.Utilise)
+                      .IsRequired();
+
+               builder.HasOne<Utilisateur>()
+                      .WithMany()
+                      .HasForeignKey(t => t.UtilisateurId)
+                      .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

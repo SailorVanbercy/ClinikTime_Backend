@@ -23,8 +23,6 @@ public class MedecinRepository(ClinikTimeDbContext context) : IMedecinRepository
         return await context.Medecins.FirstOrDefaultAsync(m => m.Id == medecinId);
     }
 
-    
-
     public async Task<List<Domain.models.Medecin>> GetAllAsync(int? specialiteId)
     {
         var query = context.Medecins

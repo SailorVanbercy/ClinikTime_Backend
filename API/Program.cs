@@ -1,9 +1,11 @@
 using ClinikTime.service;
 using ClinikTime.service.Auth;
 using ClinikTime.service.Disponibilite;
+using ClinikTime.service.Email;
 using ClinikTime.service.FichePatient;
 using ClinikTime.service.jwt;
 using ClinikTime.service.Medecin;
+using ClinikTime.service.PasswordReset;
 using ClinikTime.service.RendezVous;
 using ClinikTime.utils;
 using ClinikTime.utils.PasswordHasher;
@@ -12,6 +14,7 @@ using Infrastructure.user.EF;
 using Infrastructure.user.EF.Disponibilite;
 using Infrastructure.user.EF.FichePatient;
 using Infrastructure.user.EF.Medecin;
+using Infrastructure.user.EF.PasswordReset;
 using Infrastructure.user.EF.RendezVous;
 using Microsoft.EntityFrameworkCore;
 
@@ -76,6 +79,7 @@ builder.Services.AddScoped<IMedecinRepository, MedecinRepository>();
 builder.Services.AddScoped<IRendezVousRepository, RendezVousRepository>();
 builder.Services.AddScoped<IFichePatientRepository, FichePatientrepository>();
 builder.Services.AddScoped<IDisponibiliteMedecinRepository, DisponibiliteMedecinRepository>();
+builder.Services.AddScoped<IPasswordRepository, PasswordRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<MedecinService>();
 builder.Services.AddScoped<RendezVousService>();
@@ -84,6 +88,8 @@ builder.Services.AddScoped<DisponibiliteMedecinService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<PasswordResetService>();
 
 var app = builder.Build();
 

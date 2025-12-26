@@ -1,5 +1,6 @@
 ﻿using ClinikTime.service.Auth;
 using ClinikTime.service.jwt;
+using ClinikTime.service.PasswordReset;
 using Infrastructure.user.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ namespace ClinikTime.controllers.Auth;
 
 [ApiController]
 [Route("api/v1/auth")]
-public class AuthController(IAuthService authService, ITokenService tokenService) : ControllerBase
+public class AuthController(IAuthService authService, ITokenService tokenService, PasswordResetService passwordResetService) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("login")]
@@ -40,5 +41,22 @@ public class AuthController(IAuthService authService, ITokenService tokenService
     {
         Response.Cookies.Delete("jwt");
         return Ok("You have been logged out.");
+    }
+    
+    //DEMANDE DE RESET
+    [HttpPost("password-reset/request")]
+    public async Task<IActionResult> RequestPasswordReset([FromBody] RequestPasswordResetDto dto)
+    {
+        await passwordResetService.RequestResetAsync(dto.Email);
+
+        return Ok();
+    }
+    
+    //CONFIRMATION DU RESET
+    [HttpPost("password-reset/confirm")]
+    public async Task<IActionResult> ConfirmPasswordReset([FromBody] ConfirmPasswordResetDto dto)
+    {
+        await passwordResetService.ConfirmResetAsync(dto.Token, dto.NewPassword);
+        return Ok();
     }
 }
