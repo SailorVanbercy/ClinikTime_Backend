@@ -43,5 +43,18 @@ public class DisponibiliteMedecinController(DisponibiliteMedecinService service,
         var id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         return await service.GetMyDispo(id);
     }
-    
+
+    [Authorize(Roles = "Medecin")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var medecin = await medecinService.GetByUtilisateurIdAsync(userId);
+        var medecinId = medecin.Id;
+
+        if (medecinId == null)
+            throw new Exception("User is not a Medecin");
+        await service.DeleteAsync(id, medecinId);
+        return Ok("Dispo Supprimée");
+    }
 }

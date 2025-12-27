@@ -56,4 +56,17 @@ public class DisponibiliteMedecinService(IDisponibiliteMedecinRepository reposit
             EstBloque = d.EstBloquee
         }).ToList();
     }
+
+    public async Task DeleteAsync(int dispoId, int medecinId)
+    {
+        var dispo = await repository.GetByIdAsync(dispoId);
+        
+        if(dispo == null)
+            throw new Exception("Disponibilite not found");
+        
+        if(dispo.MedecinId != medecinId)
+            throw new Exception("Acces interdit à cette disponibilité");
+
+        await repository.DeleteAsync(dispoId, medecinId);
+    }
 }

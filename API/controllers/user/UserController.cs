@@ -57,7 +57,7 @@ public class UserController(UserService service) : ControllerBase
     /// </summary>
     /// <param name="dto"></param>
     /// <returns></returns>
-    [Authorize(Roles = "User,Medecin")]
+    [Authorize(Roles = "User,Medecin, Admin")]
     [HttpGet("me")]
     public async Task<ActionResult<UserProfileDto>> GetMyProfile()
     {

@@ -25,14 +25,14 @@ public class DisponibiliteMedecinRepository(ClinikTimeDbContext context) : IDisp
             .ToListAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, int medecinId)
     {
-        var dispo = await context.DisponibilitesMedecin.FirstOrDefaultAsync(d => d.Id == id);
+        var rows = await context.DisponibilitesMedecin
+            .Where(d => d.Id == id && d.MedecinId == medecinId)
+            .ExecuteDeleteAsync();
 
-        if (dispo == null)
-            throw new Exception("Disponibilite inexistente");
-        context.DisponibilitesMedecin.Remove(dispo);
-        await context.SaveChangesAsync();
+        if (rows == 0)
+            throw new Exception("Suppression impossible");
     }
 
     public async Task<bool> ExisteDisponibiliteOuverteCouvrantAsync(int medecinId, DateTime debut, DateTime fin)
@@ -81,4 +81,5 @@ public class DisponibiliteMedecinRepository(ClinikTimeDbContext context) : IDisp
             .OrderBy(d => d.Debut)
             .ToListAsync();
     }
+    
 }

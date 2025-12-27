@@ -19,7 +19,7 @@ public interface IDisponibiliteMedecinRepository
 
     // ❌ Supprimer une disponibilité
     // (ex: supprimer une plage horaire mal définie)
-    Task DeleteAsync(int id);
+    Task DeleteAsync(int id, int medecinId);
 
     // ✅ Vérifier qu’il existe AU MOINS UNE disponibilité OUVERTE
     // qui couvre complètement le rendez-vous demandé
