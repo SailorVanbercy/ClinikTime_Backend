@@ -50,11 +50,26 @@ public class MedecinService(IMedecinRepository repository, IUtilisateurRepositor
         return new MedecinDto(medecin);
     }
 
-    public async Task<List<MedecinDto>> GetAllAsync(int? specialiteId)
+    public async Task<List<MedecinDto>> GetAllAsync(string? specialite)
     {
-        var medecins =  await repository.GetAllAsync(specialiteId);
-        return medecins.Select(m => new MedecinDto(m)).ToList();
+        // 🔹 Aucune spécialité → tous les médecins
+        if (string.IsNullOrWhiteSpace(specialite))
+        {
+            var medecins = await repository.GetAllAsync();
+            return medecins.Select(m => new MedecinDto(m)).ToList();
+        }
+
+        // 🔹 Spécialité fournie → on résout le nom
+        var s = await repository.GetSpecialiteByNom(specialite);
+
+        if (s == null)
+            throw new Exception("Spécialité introuvable");
+
+        var medecinsFiltres = await repository.GetAllAsync(s.Id);
+
+        return medecinsFiltres.Select(m => new MedecinDto(m)).ToList();
     }
+
 
     public async Task<MedecinDto?> GetByUtilisateurIdAsync(int id)
     {
@@ -63,4 +78,5 @@ public class MedecinService(IMedecinRepository repository, IUtilisateurRepositor
             return null;
         return new  MedecinDto(medecin);
     }
+    
 }

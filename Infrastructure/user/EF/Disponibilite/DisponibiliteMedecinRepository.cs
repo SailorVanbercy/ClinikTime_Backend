@@ -40,8 +40,8 @@ public class DisponibiliteMedecinRepository(ClinikTimeDbContext context) : IDisp
         return await context.DisponibilitesMedecin.AnyAsync(d =>
             d.MedecinId == medecinId &&
             d.EstBloquee == false &&
-            d.Debut <= debut &&
-            d.Fin >= fin
+            d.Debut < debut &&
+            d.Fin > debut
         );
     }
 

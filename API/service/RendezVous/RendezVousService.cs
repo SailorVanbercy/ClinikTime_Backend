@@ -195,17 +195,7 @@ public class RendezVousService(IRendezVousRepository repository, IMedecinReposit
 
         var nouvelleFin = dto.NouveauDebut
             .AddMinutes(medecin.Specialite.DureeRdvMinutes);
-
-        // dispo ouverte
-        var dispoOk = await disponibiliterepository
-            .ExisteDisponibiliteOuverteCouvrantAsync(
-                rdv.MedecinId,
-                dto.NouveauDebut,
-                nouvelleFin
-            );
-
-        if (!dispoOk)
-            throw new Exception("Créneau indisponible");
+        
 
         // blocage
         var bloque = await disponibiliterepository

@@ -40,9 +40,22 @@ public class MedecinRepository(ClinikTimeDbContext context) : IMedecinRepository
             .ToListAsync();
     }
 
+    public Task<List<Domain.models.Medecin>> GetAllAsync()
+    {
+        return context.Medecins.ToListAsync();
+    }
+
     public async Task<Domain.models.Medecin?> GetByIdWithSpecialiteAsync(int medecinId)
     {
         return await context.Medecins.Include(m => m.Specialite)
             .FirstOrDefaultAsync(m => m.Id == medecinId);
+    }
+
+    public async Task<Specialite>GetSpecialiteByNom(string nom)
+    {
+        var specialite = await context.Specialites.FirstOrDefaultAsync(m => m.Nom == nom);
+        if (specialite == null)
+            throw new Exception("Specialité inexistante");
+        return specialite;
     }
 }

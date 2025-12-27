@@ -51,6 +51,7 @@ public class DisponibiliteMedecinService(IDisponibiliteMedecinRepository reposit
 
         return dispos.Select(d => new DisponibiliteDto
         {
+            Id = d.Id,
             Debut = d.Debut,
             Fin = d.Fin,
             EstBloque = d.EstBloquee
