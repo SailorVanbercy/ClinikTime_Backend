@@ -11,6 +11,17 @@ namespace ClinikTime.controllers.Auth;
 [Route("api/v1/auth")]
 public class AuthController(IAuthService authService, ITokenService tokenService, PasswordResetService passwordResetService) : ControllerBase
 {
+    [Authorize]
+    [HttpGet("me")]
+    public IActionResult Me()
+    {
+        return Ok(new{
+            role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value,
+            userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+            }
+            );
+    }
+    
     [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -28,8 +39,8 @@ public class AuthController(IAuthService authService, ITokenService tokenService
         Response.Cookies.Append("jwt", token, new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            Secure = false,
+            SameSite = SameSiteMode.Lax,
             Expires = DateTime.UtcNow.AddMinutes(60)
         });
         return Ok(new UserResponseDto(user));

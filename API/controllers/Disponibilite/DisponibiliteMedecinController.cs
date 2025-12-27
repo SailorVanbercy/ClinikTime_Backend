@@ -35,5 +35,13 @@ public class DisponibiliteMedecinController(DisponibiliteMedecinService service,
         await service.BloquerAsync(medecin.Id, dto);
         return Ok("Disponibilité bloquée");
     }
+
+    [Authorize(Roles = "Medecin")]
+    [HttpGet("me")]
+    public async Task<ActionResult<List<DisponibiliteDto>>> GetMyDispo()
+    {
+        var id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        return await service.GetMyDispo(id);
+    }
     
 }

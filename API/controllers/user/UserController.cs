@@ -18,7 +18,7 @@ public class UserController(UserService service) : ControllerBase
     /// Retourne la liste de tous les utilisateurs (accessible seulement par un admin)
     /// </summary>
     /// <returns></returns>
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<UserDto>>> GetAll()

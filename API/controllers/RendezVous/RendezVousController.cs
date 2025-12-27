@@ -34,7 +34,7 @@ public class RendezVousController(RendezVousService service, UserService userSer
     }
 
     [Authorize(Roles = "Medecin")]
-    [HttpGet("medecin/getMyRendezVous")]
+    [HttpGet("GetMedecinRdv")]
     public async Task<ActionResult> GetByMedecinId()
     {
          var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -59,7 +59,7 @@ public class RendezVousController(RendezVousService service, UserService userSer
     }
 
     [Authorize]
-    [HttpPut("{id}/user/annuler")]
+    [HttpPut("{id}/annuler")]
     public async Task<ActionResult> Annuler(int id)
     {
         var userid = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -68,7 +68,7 @@ public class RendezVousController(RendezVousService service, UserService userSer
     }
 
     [Authorize]
-    [HttpPut("{id}/user/modifier")]
+    [HttpPut("{id}/modifier")]
     public async Task<ActionResult> Modifier(int id, UpdateRendezVousDto dto)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -77,7 +77,7 @@ public class RendezVousController(RendezVousService service, UserService userSer
     }
 
     [Authorize(Roles = "Medecin")]
-    [HttpPut("{id}/medecin/refuser")]
+    [HttpPut("{id}/refuser")]
     public async Task<ActionResult> Refuser(int id)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);

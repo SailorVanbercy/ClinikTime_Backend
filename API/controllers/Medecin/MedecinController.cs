@@ -28,7 +28,7 @@ public class MedecinController(MedecinService service) : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("medecin")]
+    [HttpGet]
     public async Task<ActionResult<List<MedecinDto>>> GetAllMedecins([FromQuery] int? specialiteId)
     {
         var medecins = await service.GetAllAsync(specialiteId);
