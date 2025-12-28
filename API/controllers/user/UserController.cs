@@ -37,7 +37,8 @@ public class UserController(UserService service) : ControllerBase
             return  NotFound();
         return Ok(user);
     }
-
+    
+    [Authorize(Roles = "Admin")]
     [HttpGet("by-email")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -98,9 +99,18 @@ public class UserController(UserService service) : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpPost("{userId:int}/promote-medecin")]
-    public async Task<NoContentResult> PromoteMedecin(int userId)
+    // On ajoute [FromBody] PromoteToMedecinDto dto pour recevoir les infos du formulaire
+    public async Task<IActionResult> PromoteMedecin(int userId, [FromBody] PromoteToMedecinDto dto)
     {
-        await service.PromoteUserToMedecin(userId);
-        return NoContent();
+        try 
+        {
+            // On envoie les 2 paramètres au service
+            await service.PromoteUserToMedecin(userId, dto);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

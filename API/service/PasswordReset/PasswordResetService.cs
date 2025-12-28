@@ -14,6 +14,8 @@ public class PasswordResetService(IUtilisateurRepository utilisateurRepository, 
         if (user == null)
             return;
 
+        await passwordRepository.InvalidateAllForUserAsync(user.Id);
+        
         var token = new PasswordResetToken
         {
             Token = Guid.NewGuid().ToString(),

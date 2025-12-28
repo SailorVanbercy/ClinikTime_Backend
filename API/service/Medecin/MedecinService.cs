@@ -1,4 +1,5 @@
-﻿using Infrastructure.user.Dto;
+﻿using Domain.models;
+using Infrastructure.user.Dto;
 using Infrastructure.user.Dto.Create;
 using Infrastructure.user.EF;
 using Infrastructure.user.EF.Medecin;
@@ -77,6 +78,14 @@ public class MedecinService(IMedecinRepository repository, IUtilisateurRepositor
         if (medecin == null)
             return null;
         return new  MedecinDto(medecin);
+    }
+
+    public async Task<Specialite?> GetSpecialiteByNomAsync(string nom)
+    {
+        var specialite = await repository.GetSpecialiteByNom(nom);
+        if (specialite == null)
+            throw new Exception("Spécialité Introuvable");
+        return specialite;
     }
     
 }

@@ -77,7 +77,7 @@ public class RendezVousService(IRendezVousRepository repository, IMedecinReposit
         
         // Sécurité : le rdv doit appartenir au user
         if (fiche.UtilisateurId != userid)
-            throw new UnauthorizedAccessException();
+            throw new Exception("La fiche utilisateur n'est pas aux user connecté");
         
         //rdv déjà annulé
         if (rdv.Statut == "Annule")

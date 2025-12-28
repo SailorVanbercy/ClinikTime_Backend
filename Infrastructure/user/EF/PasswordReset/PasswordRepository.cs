@@ -20,6 +20,21 @@ public class PasswordRepository(ClinikTimeDbContext context) : IPasswordReposito
             t.Expiration > DateTime.UtcNow);
     }
 
+    public async Task InvalidateAllForUserAsync(int utilisateurId)
+    {
+        var tokens = await context.PasswordResetTokens
+            .Where(t => t.UtilisateurId == utilisateurId && !t.Utilise)
+            .ToListAsync();
+
+        foreach (var token in tokens)
+            token.Utilise = true;
+    }
+
+    public async Task UpdateAsync(PasswordResetToken token)
+    {
+        context.PasswordResetTokens.Update(token);
+    }
+
     public async Task SaveAsync()
     {
         await context.SaveChangesAsync();

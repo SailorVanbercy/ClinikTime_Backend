@@ -58,4 +58,5 @@ public class MedecinRepository(ClinikTimeDbContext context) : IMedecinRepository
             throw new Exception("Specialité inexistante");
         return specialite;
     }
+    
 }

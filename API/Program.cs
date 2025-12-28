@@ -140,8 +140,9 @@ if (app.Environment.IsDevelopment())
 
 // Le HTTPS Redirection peut parfois causer des warnings en dev local si le port HTTPS n'est pas configuré, 
 // mais ce n'est pas bloquant.
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
+app.UseRouting();
 // CORS doit être AVANT Auth
 app.UseCors("AllowAngularApp");
 

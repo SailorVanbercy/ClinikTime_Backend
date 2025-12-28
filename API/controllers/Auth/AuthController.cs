@@ -41,6 +41,7 @@ public class AuthController(IAuthService authService, ITokenService tokenService
             HttpOnly = true,
             Secure = false,
             SameSite = SameSiteMode.Lax,
+            Path = "/",
             Expires = DateTime.UtcNow.AddMinutes(60)
         });
         return Ok(new UserResponseDto(user));

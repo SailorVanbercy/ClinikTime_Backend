@@ -57,14 +57,16 @@ public class RendezVousController(RendezVousService service, UserService userSer
              Statut = r.Statut
          }));
     }
-
     [Authorize]
     [HttpPut("{id}/annuler")]
     public async Task<ActionResult> Annuler(int id)
     {
-        var userid = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var claimUser = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        if (claimUser == null)
+            return Unauthorized("utilisateur non authentifié");
+        var userid = int.Parse(claimUser);
         await service.AnnulerAsync(id, userid);
-        return Ok("Rendez-vous annulé");
+        return NoContent();
     }
 
     [Authorize]

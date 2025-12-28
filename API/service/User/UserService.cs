@@ -1,13 +1,15 @@
-﻿using ClinikTime.utils.PasswordHasher;
+﻿using ClinikTime.service.Medecin;
+using ClinikTime.utils.PasswordHasher;
 using Domain.models;
 using Infrastructure.user.Dto;
+using Infrastructure.user.Dto.Create;
 using Infrastructure.user.Dto.Profile;
 using Infrastructure.user.EF;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinikTime.service;
 
-public class UserService(IUtilisateurRepository repository, IPasswordHasher hasher) 
+public class UserService(IUtilisateurRepository repository, IPasswordHasher hasher, MedecinService medecinService) 
 {
     public async Task<List<UserDto>> GetAllAsync()
     {
@@ -94,17 +96,29 @@ public class UserService(IUtilisateurRepository repository, IPasswordHasher hash
 
     }
 
-    public async Task<NoContentResult> PromoteUserToMedecin(int id)
+    public async Task PromoteUserToMedecin(int userId, PromoteToMedecinDto dto)
     {
-        var user = await repository.GetByIdAsync(id);
+        // 1. Récupérer l'utilisateur
+        var user = await repository.GetByIdAsync(userId);
         if(user == null)
             throw new Exception("User not found");
-        if(user.Role != "User")
-            throw new Exception("User already has a role different of User Role");
-
-        user.Role = "Medecin";
         
-        repository.SaveChanges();
-        return new NoContentResult();
+        // 2. Changer le rôle en "Medecin"
+        // C'est obligatoire car ton MedecinService vérifie : if(user.Role != "Medecin") throw...
+        user.Role = "Medecin";
+        await repository.UpdateAsync(user);
+
+        // 3. Préparer le DTO pour ton MedecinService
+        var createMedecinDto = new CreateMedecinDto
+        {
+            UtilisateurId = userId,
+            Nom = dto.Nom,
+            Prenom = dto.Prenom,
+            Telephone = dto.Telephone,
+            SpecialiteId = dto.SpecialiteId
+        };
+
+        // 4. Appeler ton service existant pour créer l'entité Médecin
+        await medecinService.CreateMedecin(createMedecinDto);
     }
 }
